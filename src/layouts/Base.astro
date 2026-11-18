@@ -1,0 +1,49 @@
+---
+import '@fontsource/geist/latin-400.css';
+import '@fontsource/geist/latin-500.css';
+import '../styles/global.css';
+import { repoUrl, url } from '../lib/site';
+interface Props { title?: string; description?: string; image?: string; article?: boolean }
+const { title, description = '关于多 Agent 协作、工程边界与可验证交付的研究笔记。', image = 'images/ocean.jpg', article = false } = Astro.props;
+const pageTitle = title ? `${title} | Swarm-Orca` : 'Swarm-Orca · 研究与工程';
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
+const socialImage = Astro.site ? new URL(url(image), Astro.site) : undefined;
+const path = Astro.url.pathname;
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{pageTitle}</title>
+    <link rel="icon" type="image/svg+xml" href={url('favicon.svg')} />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:type" content={article ? 'article' : 'website'} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    {socialImage && <meta property="og:image" content={socialImage} />}
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳至正文</a>
+    <header class="site-header shell">
+      <a class="wordmark" href={url()} aria-label="Swarm-Orca 首页">swarm<span class="brand-slash">/</span>orca</a>
+      <nav aria-label="主导航">
+        <a href={url('research/')} aria-current={path.startsWith(url('research/')) ? 'page' : undefined}>研究文章</a>
+        <a href={url('about/')} aria-current={path === url('about/') ? 'page' : undefined}>关于项目</a>
+        <a class="repo-link" href={repoUrl}>GitHub <span aria-hidden="true">↗</span></a>
+      </nav>
+    </header>
+    <main id="main"><slot /></main>
+    <footer class="site-footer shell">
+      <div><a class="footer-brand" href={url()}>Swarm-Orca</a><p>研究协作，也研究如何交付。</p></div>
+      <p class="preview-note">网站公开预览版<br />示例内容待审核，非正式研究结论。</p>
+      <a href={url('about/#publishing')}>内容与发布说明 <span aria-hidden="true">↗</span></a>
+    </footer>
+  </body>
+</html>

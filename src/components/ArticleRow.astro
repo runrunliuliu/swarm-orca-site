@@ -1,0 +1,16 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { dateLabel, url, imageSet } from '../lib/site';
+interface Props { post: CollectionEntry<'research'> }
+const { post } = Astro.props;
+---
+<article class="article-row" data-search={`${post.data.title} ${post.data.description} ${post.data.category}`}>
+  <a class="row-image" href={url(`research/${post.id}/`)} tabindex="-1" aria-hidden="true"><img src={url(post.data.image)} srcset={imageSet(post.data.image)} sizes="(max-width: 767px) calc(100vw - 40px), 280px" alt="" width="560" height="360" loading="lazy" /></a>
+  <div class="row-copy">
+    <div class="meta">{post.data.category}{post.data.sample && <span>示例文章</span>}</div>
+    <h2><a href={url(`research/${post.id}/`)}>{post.data.title}</a></h2>
+    <p>{post.data.description}</p>
+    <div class="meta"><time datetime={post.data.date.toISOString()}>{dateLabel(post.data.date)}</time><span>约 {post.data.minutes} 分钟</span></div>
+  </div>
+  <span class="row-arrow" aria-hidden="true">↗</span>
+</article>
