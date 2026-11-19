@@ -7,7 +7,7 @@ const research = defineCollection({
   schema: z.object({
     title: z.string(), description: z.string(), date: z.coerce.date(),
     category: z.string(), author: z.string(), image: z.string(),
-    imageAlt: z.string(), caption: z.string(),
+    imageAlt: z.string(), caption: z.string(), captionUrl: z.url().optional(),
     sample: z.boolean().default(true), minutes: z.number(),
   }),
 });

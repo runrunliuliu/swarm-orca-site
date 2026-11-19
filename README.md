@@ -60,12 +60,14 @@ SITE_URL=https://runrunliuliu.github.io BASE_PATH=/swarm-orca-site/ npm run buil
 
 ## 素材来源
 
-两张图片下载自 Unsplash 图片服务，2026-11-18 用作视觉占位。对应的 `*-small.webp` 为同一来源的 640px 移动端版本。已核对 [Unsplash License](https://unsplash.com/license)：允许网站中使用，不要求署名；不得将未作显著修改的图片单独出售，也不得用于复制竞品图片服务。此处保留原图来源，不推测尚未核实的摄影师姓名。正式研究文章应换成自有图解或经审核的实验图。
+两张摄影图片下载自 Unsplash 图片服务，2026-11-18 用作视觉占位。对应的 `*-small.webp` 为同一来源的 640px 移动端版本。已核对 [Unsplash License](https://unsplash.com/license)：允许网站中使用，不要求署名；不得将未作显著修改的图片单独出售，也不得用于复制竞品图片服务。此处保留原图来源，不推测尚未核实的摄影师姓名。
 
 - `public/images/ocean.jpg`：[图片来源](https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=1600&q=80)
 - `public/images/coast.jpg`：[图片来源](https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1200&q=80)
 
-版式参考研究型博客的一般阅读结构，没有复制参考站点源码、文字或图表。
+`mac-bench-*.png` 是 2026-11-19 从 [Bespoke Labs 的 Multi Agent Coordination Bench](https://benchmarks.bespokelabs.ai/multi-agent-coordination-bench/) 原文截取的研究图表，用于评论该研究，并在文章内逐图署名、链接原图位置。未将这些图表声明为本站原创；公开长期使用前仍应确认来源方的许可要求。
+
+网站版式参考 Thinking Machines 文章及研究型博客的一般阅读结构，没有复制其源码或正文。MAC Bench 研究图表的引用按上面的来源说明处理。
 
 Geist 字体来自 `@fontsource/geist`，其版权声明与 SIL Open Font License 随静态站点一起发布于 `public/licenses/geist.txt`。
 

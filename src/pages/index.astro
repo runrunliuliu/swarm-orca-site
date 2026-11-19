@@ -13,7 +13,7 @@ const [featured, second] = posts;
     <a class="text-link" href={url('research/')}>研究文章 <span aria-hidden="true">↗</span></a>
   </section>
   <section class="featured shell" aria-labelledby="featured-title">
-    <a class="featured-image" href={url(`research/${featured.id}/`)} tabindex="-1" aria-hidden="true">
+    <a class:list={["featured-image", { "featured-image--chart": featured.data.image.includes('mac-bench-') }]} href={url(`research/${featured.id}/`)} tabindex="-1" aria-hidden="true">
       <img src={url(featured.data.image)} srcset={imageSet(featured.data.image)} sizes="(max-width: 767px) calc(100vw - 40px), 55vw" alt="" width="1600" height="900" fetchpriority="high" />
     </a>
     <div class="featured-copy">

@@ -176,6 +176,10 @@ input {
   aspect-ratio: 1.6;
   object-fit: cover;
 }
+.featured-image--chart img {
+  object-fit: contain;
+  background: #f7f4ed;
+}
 .featured h2 {
   font-size: clamp(26px, 2.5vw, 36px);
   line-height: 1.45;
@@ -400,12 +404,22 @@ input {
   object-fit: cover;
   aspect-ratio: 2.6;
 }
+.article-cover--chart img {
+  max-height: none;
+  aspect-ratio: auto;
+  object-fit: contain;
+  background: #f7f4ed;
+}
 .article-cover figcaption {
   color: var(--muted);
   font-size: 12px;
   line-height: 1.8;
   max-width: 760px;
   margin: 16px auto 0;
+}
+.article-cover figcaption a {
+  color: var(--accent);
+  text-underline-offset: 3px;
 }
 .article-grid {
   display: grid;
@@ -478,6 +492,24 @@ input {
 }
 .prose blockquote p {
   margin: 0;
+}
+.source-figure {
+  margin: 36px 0 42px;
+}
+.source-figure img {
+  width: 100%;
+  border: 1px solid var(--rule);
+  background: #f7f4ed;
+}
+.source-figure figcaption {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.75;
+}
+.source-figure figcaption strong {
+  color: var(--ink);
+  font-weight: 500;
 }
 .prose table {
   width: 100%;

@@ -4,12 +4,15 @@ description: "从 MAC Bench 出发，区分增加 Agent 的收益与协调本身
 date: 2026-11-19
 category: "研究导读"
 author: "Swarm-Orca"
-image: "images/ocean.jpg"
-imageAlt: "深色海面上的波纹与浪花"
-caption: "摄影为视觉占位，不表示 MAC Bench 或 Swarm-Orca 的实验结果。"
+image: "images/mac-bench-coordination-gain.png"
+imageAlt: "MAC Bench 中单 Agent、无协调的八 Agent 与可协调的八 Agent 得分随时间变化图"
+caption: "MAC Bench Figure 5：三种设置的平均得分与协调增益随时间变化。图源：Bespoke Labs。"
+captionUrl: "https://benchmarks.bespokelabs.ai/multi-agent-coordination-bench/#fig-overtime"
 sample: false
 minutes: 6
 ---
+
+import { url as siteUrl } from '../../lib/site';
 
 ## 从并行到协作
 
@@ -36,6 +39,11 @@ Bespoke Labs 发布的 **Multi Agent Coordination Bench（MAC Bench）**，把�
 - **过早收口的风险**：当一个 Agent 在局部视角下报告“已完成”时，如果没有独立核查，协调者很难判断它是否真的满足全局约束，还是只完成了局部自述。
 
 换句话说，协调不是免费的增强器。只有当任务存在跨模块依赖、阶段性状态耦合，或者需要持续分工与集成验证时，协调机制才可能带来净收益；否则，沟通与等待的开销很容易抵消并行本身的优势。
+
+<figure class="source-figure">
+  <img src={siteUrl('images/mac-bench-coordination-overhead.png')} width="1560" height="490" loading="lazy" alt="团队规模从二增加到八时，消息工具调用占比和重复读取占比上升" />
+  <figcaption><strong>协调本身会占用执行预算。</strong> 在具有 Agent 转录记录的六项任务中，消息板调用约占工具调用的 22% 至 27%；团队越大，短时间内重复读取共享文件的比例越高。图源：<a href="https://benchmarks.bespokelabs.ai/multi-agent-coordination-bench/#fig-logs">Bespoke Labs，MAC Bench Figure 6</a>。</figcaption>
+</figure>
 
 ## Swarm-Orca 的三个设计取舍
 
@@ -74,6 +82,11 @@ Swarm-Orca 的做法是要求交接保留最小限度的结构化事实：变更
 1. **先判断耦合度**：如果子任务彼此独立且只需择优，优先考虑无协作并行；只有当子任务共享状态、接口相互约束或需要多阶段集成时，才引入角色分工与交接机制。
 2. **明确收益与成本的账本**：评估协作是否有效，不能只看单次任务的最高得分，还需要同时记录完成质量、端到端耗时、沟通与审查带来的额外开销，以及失败后的恢复成本。
 3. **用对照实验替代直觉**：参考 MAC Bench 的拆分思路，后续验证 Swarm-Orca 的机制时，应在同一批可复现任务上对比单 Agent、无协作并行与结构化协作的表现，明确任务类型、样本范围与限制条件。
+
+<figure class="source-figure">
+  <img src={siteUrl('images/mac-bench-cost-scaling.png')} width="1560" height="622" loading="lazy" alt="一、二、四、八 Agent 团队的平均最终得分与相对成本对比" />
+  <figcaption><strong>成本增长快于得分增长。</strong> MAC Bench 按模型调用的标价估算，八 Agent 团队的成本约为单 Agent 的 8.8 倍，而不同模型的平均最终得分只缓慢上升。图源：<a href="https://benchmarks.bespokelabs.ai/multi-agent-coordination-bench/#fig-cost">Bespoke Labs，MAC Bench Figure 12</a>。</figcaption>
+</figure>
 
 在完成系统化的对照实验之前，本文讨论的仍是工程假设与设计方向，而非已被证明的性能结论。
 
