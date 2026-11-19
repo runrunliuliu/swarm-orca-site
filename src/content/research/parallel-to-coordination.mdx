@@ -1,0 +1,33 @@
+---
+title: "从并行到协作：Swarm-Orca 想解决什么？"
+description: "从 MAC Bench 出发，区分增加 Agent 的收益与协调本身的收益，讨论 Swarm-Orca 的设计动机与验证方向。"
+date: 2026-11-19
+category: "研究导读"
+author: "Swarm-Orca 编辑草稿"
+image: "images/ocean.jpg"
+imageAlt: "深色海面上的波纹与浪花"
+caption: "摄影为视觉占位，不表示 MAC Bench 或 Swarm-Orca 的实验结果。"
+sample: true
+minutes: 4
+---
+
+## 从并行到协作
+
+让多个 Agent 同时工作，正在成为处理复杂任务的一种自然选择：一个分析问题，一个编写代码，另一个负责审查。但当任务持续数小时、横跨多个模块，而且每一步都依赖此前的结果时，“同时工作”并不等于“共同推进”。谁负责哪个部分？接口变化后谁需要调整？某个 Agent 宣布完成，是否意味着整个任务已经通过验收？
+
+Bespoke Labs 发布的 **Multi Agent Coordination Bench（MAC Bench）**，把这一区别变成了可测量的问题。它包含十二项长时程任务，通过单 Agent、多 Agent 协作，以及无协作对照，区分“增加执行者带来的收益”和“协调本身带来的收益”。在其测试设置下，八 Agent 团队的平均得分高于单 Agent，却没有超过无协作对照；整体协调增益未达到统计显著。这并不证明协作无用，而是提醒我们：团队表现的提升，不能仅凭 Agent 数量来解释。[研究原文](https://benchmarks.bespokelabs.ai/multi-agent-coordination-bench/)
+
+这里还有一个重要的实验细节：无协作对照并不总是“关闭群聊”。对于多数共享型任务，它采用多个独立 Agent 分别求解、再取最好结果的方式。因此，这项研究提出的挑战更具体：**组织一个团队，能否比让同样数量的 Agent 独立探索更有价值？** 这一比较固定的是运行时长，而不是总费用；不能把它直接理解为等成本条件下的优劣。[实验设置与协调增益定义](https://benchmarks.bespokelabs.ai/multi-agent-coordination-bench/)
+
+这也是 Swarm-Orca 试图从工程侧回答的问题。我们的出发点，是把协作中的约定变成可以检查的任务与执行记录：开始前明确目标、工作范围和验收标准；执行中区分协调、实施与独立审查的职责；交接时保留代码基线、产物和测试证据。消息已经送达、Agent 已经结束一轮回答，与任务真正完成，是不同的事实。
+
+这些设计并不能直接证明 Swarm-Orca 已经解决了协调问题。它们首先提供了一种分析问题的基础：出现重复劳动时，可以检查任务归属；上下游无法衔接时，可以追溯接口与版本；执行中断时，可以核对已发生的动作，而不是从头猜测。至于这些机制能否改善完成质量、缩短耗时，并抵消额外的沟通与审查成本，仍需要对照实验来验证。
+
+因此，这篇文章将从 MAC Bench 对“协调收益”的拆分出发，介绍 Swarm-Orca 的设计取舍。我们关心的不只是能启动多少个 Agent，而是：**在什么任务、什么组织方式和什么成本下，多个 Agent 才值得一起工作？**
+
+## 参考与编辑说明
+
+- [Bespoke Labs：Multi Agent Coordination Bench](https://benchmarks.bespokelabs.ai/multi-agent-coordination-bench/)，发布于 2026 年 11 月 18 日，查阅于 2026 年 11 月 19 日。
+- [Swarm-Orca 公开仓库](https://github.com/runrunliuliu/swarm-orca)：项目能力、实现状态与使用边界以仓库说明为准。
+- 当前为首篇文章的 Intro 草稿，后续正文尚未完成；署名与封面待发布前确认。
+- MAC Bench 的实验结论来自 Bespoke Labs，并非 Swarm-Orca 的测试结果。两者的联系是本文的工程解读，不表示 Swarm-Orca 已参测或取得性能提升。
