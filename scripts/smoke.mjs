@@ -5,7 +5,8 @@ import assert from 'node:assert/strict';
 const root = (process.env.PREVIEW_URL || 'http://127.0.0.1:4321').replace(/\/$/, '') + '/';
 const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless: true });
 await mkdir('artifacts', { recursive: true });
-const routes = ['', 'research/', 'research/verifiable-collaboration/', 'research/task-context/', 'about/', '404.html'];
+const routes = ['', 'research/', 'research/parallel-to-coordination/', 'about/', '404.html'];
+const removedArticleRoutes = ['research/verifiable-collaboration/', 'research/task-context/'];
 const errors = [];
 try {
   for (const colorScheme of ['light', 'dark']) {
@@ -23,24 +24,22 @@ try {
         assert.equal(await page.locator('body').evaluate(body => /[—–]/.test(body.innerText)), false, `${route}: copy check`);
         const broken = await page.locator('a[href*="#"]').evaluateAll(links => links.filter(link => link.pathname === location.pathname && link.hash && !document.getElementById(decodeURIComponent(link.hash.slice(1)))).map(link => link.href));
         assert.deepEqual(broken, [], `${route}: broken anchors`);
-        if (width !== 320 && ['', 'research/verifiable-collaboration/'].includes(route)) await page.screenshot({ path: `artifacts/${route ? 'article' : 'home'}-${width}-${colorScheme}.png`, fullPage: true });
+        if (width !== 320 && ['', 'research/parallel-to-coordination/'].includes(route)) await page.screenshot({ path: `artifacts/${route ? 'article' : 'home'}-${width}-${colorScheme}.png`, fullPage: true });
       }
       await page.goto(root + 'research/');
       await page.locator('#search').fill('不存在的关键词');
       assert(await page.locator('#empty').isVisible());
-      await page.locator('#search').fill('上下文');
+      await page.locator('#search').fill('协调');
       assert.equal(await page.locator('.article-row:visible').count(), 1);
       await page.locator('#search').fill('');
-      assert.equal(await page.locator('.article-row:visible').count(), 2);
-      await page.goto(root + 'research/verifiable-collaboration/');
-      await page.locator('.evidence-demo summary').first().click();
-      assert(await page.locator('.evidence-demo details').first().getAttribute('open') !== null);
+      assert.equal(await page.locator('.article-row:visible').count(), 1);
+      await page.goto(root + 'research/parallel-to-coordination/');
       if (width < 1024) {
         assert.equal(await page.locator('.toc details').getAttribute('open'), null);
         await page.locator('.toc summary').click();
         assert(await page.locator('.toc nav').isVisible());
       }
-      console.log(`PASS ${colorScheme} ${width}px: ${routes.length} pages, search, anchors, disclosure`);
+      console.log(`PASS ${colorScheme} ${width}px: ${routes.length} pages, search, anchors, navigation`);
       await page.close();
     }
   }
@@ -53,6 +52,7 @@ try {
     }
   }
   for (const href of links) assert((await page.request.get(href)).ok(), `Broken internal link: ${href}`);
+  for (const route of removedArticleRoutes) assert.equal((await page.request.get(root + route)).status(), 404, `${route}: removed article must stay unavailable`);
   assert.deepEqual(errors, [], 'Browser errors');
   console.log(`PASS ${links.size} internal link targets; no browser errors`);
 } finally {

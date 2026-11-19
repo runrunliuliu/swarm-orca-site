@@ -11,8 +11,6 @@ sample: false
 minutes: 6
 ---
 
-import { url as siteUrl } from '../../lib/site';
-
 ## 从并行到协作
 
 让多个 Agent 同时工作，正在成为处理复杂任务的一种自然选择：一个分析问题，一个编写代码，另一个负责审查。但当任务持续数小时、横跨多个模块，而且每一步都依赖此前的结果时，“同时工作”并不等于“共同推进”。谁负责哪个部分？接口变化后谁需要调整？某个 Agent 宣布完成，是否意味着整个任务已经通过验收？
@@ -83,5 +81,4 @@ Swarm-Orca 的做法是要求交接保留最小限度的结构化事实：变更
 
 - [Bespoke Labs：Multi Agent Coordination Bench](https://benchmarks.bespokelabs.ai/multi-agent-coordination-bench/)，发布于 2026 年 11 月 18 日，查阅于 2026 年 11 月 19 日。
 - [Swarm-Orca 公开仓库](https://github.com/runrunliuliu/swarm-orca)：项目能力、实现状态与使用边界以仓库说明为准。
-- 本站相关草稿：<a href={siteUrl('research/task-context/')}>任务需要上下文，而不只是一段提示词</a>、<a href={siteUrl('research/verifiable-collaboration/')}>多 Agent 协作，为什么需要可验证的交付？</a>。
 - MAC Bench 的实验结论来自 Bespoke Labs，并非 Swarm-Orca 的测试结果。两者的联系是本文的工程解读，不表示 Swarm-Orca 已参测或取得性能提升。

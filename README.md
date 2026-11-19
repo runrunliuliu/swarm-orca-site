@@ -1,6 +1,6 @@
 # Swarm-Orca 研究网站
 
-独立的 Astro + MDX 静态网站，当前为公开预览版。所有文章与摄影都是编辑示例，不代表正式研究结论或能力验收。
+独立的 Astro + MDX 静态网站，当前为公开预览版。文章包含已发布的研究内容；摄影仍为视觉占位，不代表实验结果或能力验收。
 
 - 网站：https://runrunliuliu.github.io/swarm-orca-site/
 - 网站源码：https://github.com/runrunliuliu/swarm-orca-site
@@ -32,11 +32,10 @@ npm run test:base
 - `src/content/research/*.mdx`：文章，新增文件自动出现在列表。
 - `src/content.config.ts`：元数据校验。
 - `src/pages/research/[id].astro`：长文模板与自动目录。
-- `src/components/EvidenceDemo.astro`：仅本地浏览器运行的概念示例。
 - `src/styles/global.css`：排版与跟随系统的明暗主题。
 - `public/images/`：本地图片，不在访问时请求图片服务。
 
-新文章参考已有 frontmatter。`sample: true` 默认开启，正文渲染审核提醒。日期为编辑示例日期，阅读时长为编辑估计。文件名即 URL，应在发布前确定。
+新文章参考已有 frontmatter。正式内容设置 `sample: false`；草稿设置 `sample: true` 时正文会渲染审核提醒。阅读时长为编辑估计，文件名即 URL，应在发布前确定。
 
 ## 设计约定
 
@@ -53,7 +52,7 @@ npm run test:base
 SITE_URL=https://runrunliuliu.github.io BASE_PATH=/swarm-orca-site/ npm run build
 ```
 
-`SITE_URL` 决定 canonical 与社交分享图片的域名；未设置时不输出虚构域名。当前模板固定 `noindex, nofollow`，正式宣传前必须审核示例内容、署名与公开证据，再显式开放索引。`noindex` 不是访问控制，公开预览的网址仍可被任何人访问。不要上传私有配置、运行日志、密钥或未经审核的素材。
+`SITE_URL` 决定 canonical 与社交分享图片的域名；未设置时不输出虚构域名。当前模板固定 `noindex, nofollow`，开放索引前必须复核内容、署名与公开证据。`noindex` 不是访问控制，公开预览的网址仍可被任何人访问。不要上传私有配置、运行日志、密钥或未经审核的素材。
 
 本地浏览器测试：`npm test`（需先运行预览服务）。线上浏览器测试：`PREVIEW_URL=https://runrunliuliu.github.io/swarm-orca-site/ npm test`。CI 不运行完整浏览器矩阵，发布后需另行执行。
 
