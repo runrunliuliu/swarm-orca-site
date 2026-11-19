@@ -3,11 +3,11 @@ title: "单个 Agent 没问题，为什么合起来会跑偏？从 Collective De
 description: "从 Artificial Societies 的 Collective Dependence Analysis 出发，讨论多 Agent 集体失准的成因，以及 Swarm-Orca 在工程侧可以做的事。"
 date: 2026-11-19
 category: "研究导读"
-author: "Swarm-Orca 编辑草稿"
+author: "Swarm-Orca"
 image: "images/coast.jpg"
 imageAlt: "海岸旁层层涌向岸边的浪花"
 caption: "摄影为视觉占位，不表示 Collective Dependence Analysis 或 Swarm-Orca 的实验结果。"
-sample: true
+sample: false
 minutes: 4
 ---
 
@@ -19,7 +19,7 @@ import { url as siteUrl } from '../../lib/site';
 
 Artificial Societies 发布的 **Collective Dependence Analysis（CDA）** 把这类现象称为“集体失准（collective misalignment）”。在多 Agent 对话与协作中，某些信息在单条消息层面并不构成违规，但当它们跨角色拼接、累积并被后续执行者采纳时，整体轨迹就可能越过安全或业务边界。传统做法往往只盯着单个节点做审核，很难回答一个关键问题：究竟是哪几条交互消息、哪一段依赖关系，共同促成了最终的异常结果？[研究原文](https://societies.ai/collective-dependence)
 
-CDA 的核心思路，是把因果归因中的**必要性（necessity）**与**充分性（sufficiency）**引入多 Agent 交互记录的分析中：不是笼统地否定整个对话，而是以接近 $O(N)$ 的评估代价，定位出对最终越界结果真正起决定作用的最小消息子集，并在必要时通过精准移除或拦截这些关键交互来打断异常轨迹。在他们的受控实验中，针对关键依赖消息的定向干预显著降低了集体违规率，同时保留了正常的任务沟通。[Collective Dependence Analysis](https://societies.ai/collective-dependence)
+CDA 的核心思路，是把因果归因中的 **必要性（necessity）** 与 **充分性（sufficiency）** 引入多 Agent 交互记录的分析中：它区分解释异常结果的消息集合，以及在已测试候选中能够阻断违规结果的最小移除集合。在作者报告的 485 个 Agent 自由交互违规案例中，移除 CDA 选出的消息后，违规率从 98% 降至 9%，正常任务的成功率从 20% 升至 79%。这些数字来自该研究的特定实验设置，不能直接外推为其他系统的普遍效果。[Collective Dependence Analysis](https://societies.ai/collective-dependence)
 
 这对工程实践的启发很直接：多 Agent 协作的风险，不只是“某个 Agent 犯了错”，更在于**信息在交接过程中如何被放大、重组并变成后续动作的依据**。
 
@@ -39,12 +39,11 @@ Swarm-Orca 并不是一个专门做安全归因研究的评测框架，但 CDA �
 4. **探索面向工程轨迹的轻量依赖检查**
    基于公开的任务与交接记录，未来可以进一步验证：能否借鉴 CDA 的必要性与充分性思路，在多 Agent 工程任务中识别“哪几条交接信息改变了最终实现路径”，从而更早发现冗余沟通、基线漂移或潜在的越界指令组合。这仍属于待验证的研究与工程方向，需要通过具体任务和对照测试来检验效果与成本。
 
-因此，这篇文章的后续部分将沿着“集体失准为何发生”与“工程边界如何约束依赖”展开，讨论 Swarm-Orca 如何在不假设单个 Agent 永远可靠的前提下，让多 Agent 的协同过程更可控、可核查。
+因此，本文把 CDA 作为一种观察协作依赖的研究视角：不假设单个 Agent 永远可靠，而是关注信息如何跨角色传播、哪些交接会改变后续行为，以及工程边界能否让这种影响更容易被检查。把这一视角落到 Swarm-Orca 仍需要实现与对照实验，不能由设计讨论直接推导出安全效果。
 
-## 参考与编辑说明
+## 参考与说明
 
 - [Artificial Societies：Collective Dependence Analysis](https://societies.ai/collective-dependence)，查阅于 2026 年 11 月 19 日。
 - 本站相关文章：<a href={siteUrl('research/parallel-to-coordination/')}>从并行到协作：Swarm-Orca 想解决什么？</a>。
 - [Swarm-Orca 公开仓库](https://github.com/runrunliuliu/swarm-orca)：项目能力、实现状态与使用边界以仓库说明为准。
-- 当前为新文章的 Intro 草稿，后续正文待补充；署名与封面待发布前确认。
 - Collective Dependence Analysis 的实验方法与结论来自 Artificial Societies，并非 Swarm-Orca 的测试结果。本文对工程应用方向的讨论属于设计设想，不代表 Swarm-Orca 已实现相应自动归因能力。
