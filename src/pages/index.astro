@@ -17,7 +17,7 @@ const [featured, second] = posts;
       <img src={url(featured.data.image)} srcset={imageSet(featured.data.image)} sizes="(max-width: 767px) calc(100vw - 40px), 55vw" alt="" width="1600" height="900" fetchpriority="high" />
     </a>
     <div class="featured-copy">
-      <div class="meta">{featured.data.category}<span>示例文章</span></div>
+      <div class="meta">{featured.data.category}{featured.data.sample && <span>示例文章</span>}</div>
       <h2 id="featured-title"><a href={url(`research/${featured.id}/`)}>{featured.data.title}</a></h2>
       <p>{featured.data.description}</p>
       <div class="meta"><time datetime={featured.data.date.toISOString()}>{dateLabel(featured.data.date)}</time><span>约 {featured.data.minutes} 分钟</span></div>
@@ -37,7 +37,7 @@ const [featured, second] = posts;
     </dl>
   </section>
   {second && <section class="secondary-story shell" aria-labelledby="second-title">
-    <div><div class="meta">{second.data.category}<span>示例文章</span></div>
+    <div><div class="meta">{second.data.category}{second.data.sample && <span>示例文章</span>}</div>
       <h2 id="second-title"><a href={url(`research/${second.id}/`)}>{second.data.title}</a></h2>
       <p>{second.data.description}</p><a class="text-link" href={url(`research/${second.id}/`)}>阅读全文 <span aria-hidden="true">↗</span></a>
     </div>
