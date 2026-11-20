@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1560 600" role="img" aria-labelledby="title desc">
+  <title id="title">多智能体系统动机的三次演进</title>
+  <desc id="desc">从角色分工，到上下文管理，再到并行探索的三阶段时间线</desc>
+  <rect width="1560" height="600" fill="#f7f4ed"/>
+  <text x="92" y="86" fill="#20302b" font-family="Georgia, 'Songti SC', serif" font-size="38" font-weight="700">为什么还需要多智能体？</text>
+  <text x="92" y="132" fill="#6e7772" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="20">答案从“多几个角色”，逐渐变成“多几条可共享进展的探索轨迹”</text>
+  <path d="M180 330 H1380" stroke="#bdc6c0" stroke-width="4"/>
+  <circle cx="250" cy="330" r="23" fill="#4f7569"/>
+  <circle cx="780" cy="330" r="23" fill="#4f7569"/>
+  <circle cx="1310" cy="330" r="23" fill="#c66a3d"/>
+  <text x="250" y="229" text-anchor="middle" fill="#4f7569" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="22" font-weight="700">阶段一</text>
+  <text x="250" y="273" text-anchor="middle" fill="#20302b" font-family="Georgia, 'Songti SC', serif" font-size="32" font-weight="700">角色分工</text>
+  <text x="250" y="395" text-anchor="middle" fill="#3f4b46" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="19">Agent 是一个角色</text>
+  <text x="250" y="429" text-anchor="middle" fill="#6e7772" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="17">CEO · 工程师 · Reviewer</text>
+  <text x="780" y="229" text-anchor="middle" fill="#4f7569" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="22" font-weight="700">阶段二</text>
+  <text x="780" y="273" text-anchor="middle" fill="#20302b" font-family="Georgia, 'Songti SC', serif" font-size="32" font-weight="700">上下文管理</text>
+  <text x="780" y="395" text-anchor="middle" fill="#3f4b46" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="19">Agent 是一个干净窗口</text>
+  <text x="780" y="429" text-anchor="middle" fill="#6e7772" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="17">并行阅读 · 压缩回传</text>
+  <text x="1310" y="229" text-anchor="middle" fill="#c66a3d" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="22" font-weight="700">阶段三</text>
+  <text x="1310" y="273" text-anchor="middle" fill="#20302b" font-family="Georgia, 'Songti SC', serif" font-size="32" font-weight="700">并行探索</text>
+  <text x="1310" y="395" text-anchor="middle" fill="#3f4b46" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="19">Agent 是一条长时轨迹</text>
+  <text x="1310" y="429" text-anchor="middle" fill="#6e7772" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="17">并发搜索 · 共享已验证进展</text>
+  <text x="92" y="538" fill="#6e7772" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="16">三种动机没有互相取代。关键是根据任务结构，选择最少但足够的协作机制。</text>
+</svg>

@@ -1,0 +1,122 @@
+---
+title: "为什么还需要多智能体？从角色分工到并行探索"
+description: "多智能体系统的动机已经从角色扮演，演进到上下文管理与并行探索。真正的问题不是 Agent 越多越好，而是什么任务值得协作。"
+date: 2026-11-20
+category: "研究导读"
+author: "milo 原作 / Swarm-Orca 整理"
+image: "images/mas-evolution-cover.svg"
+imageAlt: "多智能体系统从角色分工、上下文管理到并行探索的三阶段时间线"
+caption: "多智能体系统动机的三次演进。本站根据原文观点重新整理并绘制。"
+sample: false
+minutes: 10
+---
+
+import { url as siteUrl } from '../../lib/site';
+
+多智能体系统的理由一直在变。早期，人们希望让同一个模型扮演不同角色，像一家公司一样分工；随后，重点转向把长任务拆进多个干净的上下文窗口；现在，更有挑战性的方向是让多条长时轨迹并发探索，并共享已经验证的进展。
+
+这三种动机并不互相排斥，但它们回答的是不同问题。角色分工关心“谁负责什么”，上下文管理关心“怎样避免一条轨迹越来越拥挤”，并行探索关心“单条轨迹在有限时间里根本覆盖不了的问题空间怎么办”。如果没有先判断任务属于哪一种，增加 Agent 往往只会增加消息、重复劳动和错误传播。
+
+本文根据 milo 发布的《Why we need multi-agent system》整理，并结合相关研究的公开材料重新核对。原文观点与案例归原作者所有；本文的结构、表述和图解由本站重写，用于讨论 Swarm-Orca 的适用边界。[查看原文](https://www.xiaohongshu.com/explore/6affb507000000001601b622)
+
+## 第一阶段：角色分工为什么没有成为最终答案
+
+2023 年前后的多智能体系统，常把 Agent 当成一个具体角色。ChatDev 组织 CEO、CTO、程序员、Reviewer 和 Tester；MetaGPT 把产品文档、接口设计等结构化产物放进角色间的交接；AutoGen 则把 Agent 对话抽象成可编程流程。
+
+这个方向的直觉来自人类组织：复杂任务可以靠分工解决。但模型角色和人类岗位并不完全相同。如果多个角色背后使用同一个基础模型，它们的能力差异主要来自提示词、上下文与工具，而不是长期训练形成的专业分化。角色名称本身不会自动产生新信息，也不会消除协作成本。
+
+MAST 对七个开源多智能体系统的 1,600 多条轨迹进行了分析，报告的端到端失败率落在 41% 到 86.7% 之间。不同系统对应的任务与设置并不一致，这些数字不能直接横向排名；更重要的发现是，失败模式集中在系统设计、Agent 间不一致，以及任务验证与终止判断，而不只是角色提示写得不够清楚。[MAST 论文与数据说明](https://proceedings.nips.cc/paper_files/paper/2025/hash/b1041e52d3be19f0a9bc491657488e4a-Abstract-Datasets_and_Benchmarks_Track.html)
+
+因此，第一阶段真正留下来的不是“虚拟公司”的外观，而是三项更朴素的工程能力：结构化交接、可执行反馈，以及独立验证。
+
+## 第二阶段：Agent 成为一个干净的上下文窗口
+
+当任务持续时间变长，单条轨迹面临的问题不只是上下文长度不够，还包括历史信息越来越难筛选。搜索过程、失败尝试、工具输出和中间结论都留在同一个窗口里，模型即使“看得到”，也不一定能稳定找到真正相关的信息。
+
+于是，多智能体重新被解释为一种上下文管理方法：Lead Agent 负责规划，把相对独立的搜索方向交给多个 Subagent；每个 Subagent 在自己的窗口里使用工具、阅读材料，最后只回传压缩后的发现与证据。
+
+<figure class="source-figure diagram-figure">
+  <div class="diagram-scroll"><img src={siteUrl('images/mas-context-fanout.svg')} width="1000" height="610" loading="lazy" alt="Lead Agent 将问题分配给三个独立上下文的 Subagent，再接收压缩结果" /></div>
+  <figcaption><strong>图一：上下文扇出。</strong> 多个窗口扩大了信息覆盖，但 Lead Agent 仍要承担任务拆分、结果压缩与冲突处理。</figcaption>
+</figure>
+
+Anthropic 公布的多智能体研究系统采用了这种 orchestrator-worker 结构。在其内部研究评测中，Opus 4 作为 Lead、Sonnet 4 作为 Subagent 的系统比单 Opus 4 高 90.2%；同时，多智能体系统的 token 用量约为普通对话的 15 倍。这个结果来自特定产品、模型和内部评测，不能外推为所有任务的普遍增益，但它清楚说明了一件事：这类系统不是“免费并行”，而是在用更多推理与工具预算换取更广的搜索覆盖。[Anthropic 多智能体研究系统](https://www.anthropic.com/research/multi-agent-research-system)
+
+阶段二适合边界比较清楚的任务，例如并行检索不同来源、检查不同模块、从多个角度审阅同一份产物。它的主线仍然是一条：Subagent 为 Lead Agent 收集信息，最终写入与决策通常需要收敛到一个明确责任者。
+
+## 第三阶段：从拆任务转向搜索问题空间
+
+有些任务很难预先拆成稳定的子任务。科学发现、漏洞挖掘和大型工程探索都可能有大量方向，大多数方向是死路，而且只有真正尝试以后才知道下一步应该往哪里走。
+
+这时，Agent 不再只是一个角色或一个上下文窗口，而是一条独立的长时轨迹。系统的目标也不只是把已知工作并行做完，而是扩大搜索树的覆盖范围。
+
+<figure class="source-figure diagram-figure">
+  <div class="diagram-scroll"><img src={siteUrl('images/mas-exploration-sharing.svg')} width="1000" height="620" loading="lazy" alt="多条独立探索轨迹与共享已验证进展的探索树对比" /></div>
+  <figcaption><strong>图二：独立采样与协作探索。</strong> 右侧只有在验证可靠时才有优势；未经验证的错误同样会被其他轨迹继承和放大。</figcaption>
+</figure>
+
+Anthropic 在多智能体漏洞挖掘实验中，让 45 个 Agent 使用各自的虚拟机和共享论坛，检查 15 个开源项目。协作 Swarm 找到 266 个漏洞，独立并行方案找到 21 个；但两组的 token 用量分别约为 2,700 万和 650 万，因此这不是等成本对比。更值得关注的是实验暴露出的协调问题，例如大量 Agent 选择了相同分支名、重复研究同类目标，以及规模扩大后成功合并比例下降。[Anthropic 多智能体模式与问题](https://www.anthropic.com/research/multiagent-systems)
+
+阶段三的关键不是消息更多，而是**已验证进展能否成为其他轨迹的新起点**。没有可靠的测试、评估器或已知正确的 Oracle，共享只会让错误传播得更快。
+
+## Agent 越多越好吗？任务结构比数量重要
+
+Google Research 对 180 种 Agent 配置进行了受控比较，覆盖单 Agent 和四种多智能体架构。结果呈现出明显的任务差异：在可并行的金融分析任务上，中心化多智能体相对单 Agent 提升 80.9%；在强顺序依赖的 PlanCraft 上，各种多智能体方案反而下降 39% 到 70%。这些数字同样只对应论文中的模型、基准和预算设置，但足以否定“增加 Agent 总会更好”的简单假设。[Google Research：Agent 系统的扩展规律](https://research.google/blog/towards-a-science-of-scaling-agent-systems-when-and-why-agent-systems-work/)
+
+问题的分界不在“简单”与“复杂”，而在任务结构：
+
+- **可并行性**：多个方向能否独立推进，还是每一步都依赖上一步的精确状态？
+- **整合成本**：结果能否通过统一接口、测试或评分合并，还是需要大量隐含决策保持一致？
+- **错误传播**：失败能否被便宜地识别，还是会被后续 Agent 当成事实继续放大？
+- **基线强度**：单 Agent 已经很可靠时，新增沟通与协调是否仍能覆盖它带来的成本？
+
+因此，多智能体架构应该是根据任务按需启用的工具，而不是默认配置。
+
+## Swarm 真正产生净收益的三个条件
+
+综合原文与这些研究，Agent Swarm 更可能在三个条件同时成立时产生净收益。
+
+<figure class="source-figure diagram-figure">
+  <div class="diagram-scroll"><img src={siteUrl('images/mas-fit-conditions.svg')} width="1000" height="520" loading="lazy" alt="任务可并行、验证可靠和轨迹预算充足三个条件的交集" /></div>
+  <figcaption><strong>图三：Swarm 的适用条件。</strong> 条件不足时，少量按需 Subagent 通常比持续运行的大规模 Swarm 更容易控制。</figcaption>
+</figure>
+
+### 1. 任务足够宽，并且顺序依赖较弱
+
+任务需要存在多个可以同时推进的方向。若所有角色都必须争用同一个状态、同一份文件或同一个下一步决策，等待与冲突会迅速抵消并发收益。
+
+### 2. 有便宜而可靠的验证方式
+
+测试、形式化检查、稳定的评估器、Judge 或已知正确的 Oracle，可以把“一个 Agent 说完成了”转化为可检查的事实。验证成本过高时，搜索规模越大，验收负担也越大。
+
+### 3. 每条轨迹都有足够预算
+
+Agent 数量并不能替代单条轨迹的思考与执行预算。若每个 Agent 只能进行很浅的尝试，大规模并发可能只是制造更多相似的早期失败。
+
+不满足这些条件时，单 Agent 配合少量阅读、检索或独立审查 Subagent，往往是更稳妥的选择。它保留了上下文隔离的收益，同时让写入责任与任务状态保持单一。
+
+## 对 Swarm-Orca 的启发
+
+这条演进路线也解释了 Swarm-Orca 为什么把重点放在任务边界、工作区、角色责任与可验证交付上，而不是单纯追求 Agent 数量。
+
+如果系统只实现“能启动更多 Agent”，它解决的是并发入口；要让协作真正产生价值，还需要回答：哪些任务可以并行，成员从哪个代码基线开始，进展如何共享，谁有权写入，如何避免重复工作，以及什么证据能够终止任务。
+
+从工程角度看，可以把不同阶段对应到三种按需能力：
+
+| 任务需要 | 更合适的协作形态 | 首要约束 |
+| --- | --- | --- |
+| 明确角色与固定流程 | 结构化交接 | 接口、责任和终止条件 |
+| 并行阅读与信息收集 | Lead 加 Subagent | 上下文隔离与压缩质量 |
+| 开放式搜索与长时探索 | 多轨迹 Swarm | 验证、去重、预算与恢复 |
+
+这些映射是设计判断，不代表 Swarm-Orca 已经在所有类型任务上证明了收益。后续验证仍需要在同一任务、模型与预算下，对比单 Agent、独立并行和结构化协作，而不是只展示一次成功案例。
+
+## 参考与转载说明
+
+- 原文：[milo（Junxiao Yang），Why we need multi-agent system](https://www.xiaohongshu.com/explore/6affb507000000001601b622)。本文为重新组织和核对后的研究导读，不是原文全文复制；原文观点与案例归原作者所有。
+- [MAST：Why Do Multi-Agent LLM Systems Fail?](https://proceedings.nips.cc/paper_files/paper/2025/hash/b1041e52d3be19f0a9bc491657488e4a-Abstract-Datasets_and_Benchmarks_Track.html)
+- [Anthropic：How we built our multi-agent research system](https://www.anthropic.com/research/multi-agent-research-system)
+- [Google Research：Towards a science of scaling agent systems](https://research.google/blog/towards-a-science-of-scaling-agent-systems-when-and-why-agent-systems-work/)
+- [Anthropic：Patterns and problems in multiagent systems](https://www.anthropic.com/research/multiagent-systems)
+- [Swarm-Orca 公开仓库](https://github.com/runrunliuliu/swarm-orca)
+- 本文三张正文图与封面图均为本站根据概念重新绘制，不复用原帖图片，不代表任何具体产品的精确实现。

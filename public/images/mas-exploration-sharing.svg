@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 620" role="img" aria-labelledby="title desc">
+  <title id="title">独立探索与共享验证进展的区别</title>
+  <desc id="desc">左侧多条独立轨迹各自从头探索，右侧轨迹共享已验证节点并继续分叉</desc>
+  <rect width="1000" height="620" fill="#f7f4ed"/>
+  <text x="54" y="62" fill="#20302b" font-family="Georgia, 'Songti SC', serif" font-size="28" font-weight="700">阶段三：并发的价值，不只在多试几次</text>
+  <line x1="500" y1="104" x2="500" y2="550" stroke="#d3d8d4"/>
+  <text x="250" y="116" text-anchor="middle" fill="#4f7569" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="19" font-weight="700">互不交流：每条轨迹都从头走</text>
+  <text x="750" y="116" text-anchor="middle" fill="#c66a3d" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="19" font-weight="700">共享进展：从已验证节点继续</text>
+  <g fill="none" stroke="#7f9188" stroke-width="4" stroke-linecap="round">
+    <path d="M90 500 C115 420 110 350 140 280 C160 230 165 190 170 158"/>
+    <path d="M190 500 C220 420 210 330 245 260 C270 210 255 175 250 158"/>
+    <path d="M290 500 C270 420 315 340 320 275 C326 220 330 188 330 158"/>
+    <path d="M390 500 C365 430 400 350 395 290 C390 230 410 190 410 158"/>
+  </g>
+  <g fill="#9aa9a2">
+    <circle cx="140" cy="280" r="9"/><circle cx="245" cy="260" r="9"/><circle cx="320" cy="275" r="9"/><circle cx="395" cy="290" r="9"/>
+  </g>
+  <g fill="none" stroke="#4f7569" stroke-width="4" stroke-linecap="round">
+    <path d="M750 500 V420"/>
+    <path d="M750 420 C680 380 630 330 620 270"/>
+    <path d="M750 420 C750 360 750 310 750 245"/>
+    <path d="M750 420 C820 380 870 330 880 270"/>
+    <path d="M620 270 C600 220 585 190 570 158"/>
+    <path d="M620 270 C660 230 675 190 680 158"/>
+    <path d="M750 245 C740 205 745 180 750 158"/>
+    <path d="M880 270 C850 220 850 190 850 158"/>
+    <path d="M880 270 C910 220 920 190 930 158"/>
+  </g>
+  <circle cx="750" cy="420" r="18" fill="#c66a3d"/>
+  <circle cx="620" cy="270" r="15" fill="#c66a3d"/>
+  <circle cx="750" cy="245" r="15" fill="#c66a3d"/>
+  <circle cx="880" cy="270" r="15" fill="#c66a3d"/>
+  <g font-family="-apple-system, 'PingFang SC', sans-serif" font-size="13" fill="#7d3e22">
+    <text x="750" y="456" text-anchor="middle">已验证进展</text>
+    <text x="620" y="301" text-anchor="middle">可复用节点</text>
+  </g>
+  <text x="54" y="580" fill="#6e7772" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="14">只有验证足够可靠，右侧的共享才会放大有效进展；否则错误也会沿着分支扩散。</text>
+</svg>

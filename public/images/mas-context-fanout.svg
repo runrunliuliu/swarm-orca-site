@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 610" role="img" aria-labelledby="title desc">
+  <title id="title">Lead Agent 和 Subagent 的上下文扇出</title>
+  <desc id="desc">Lead Agent 把问题拆给三个拥有独立上下文的 Subagent，再接收压缩结果</desc>
+  <rect width="1000" height="610" fill="#f7f4ed"/>
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#4f7569"/></marker>
+  </defs>
+  <text x="56" y="64" fill="#20302b" font-family="Georgia, 'Songti SC', serif" font-size="28" font-weight="700">阶段二：用多个干净窗口换取更宽的信息覆盖</text>
+  <rect x="365" y="104" width="270" height="92" rx="4" fill="#ffffff" stroke="#4f7569" stroke-width="2"/>
+  <text x="500" y="142" text-anchor="middle" fill="#20302b" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="20" font-weight="700">Lead Agent</text>
+  <text x="500" y="171" text-anchor="middle" fill="#6e7772" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="15">规划 · 拆分 · 汇总</text>
+  <path d="M430 196 C380 240 250 238 200 286" fill="none" stroke="#4f7569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M500 196 V286" fill="none" stroke="#4f7569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M570 196 C620 240 750 238 800 286" fill="none" stroke="#4f7569" stroke-width="2" marker-end="url(#arrow)"/>
+  <g font-family="-apple-system, 'PingFang SC', sans-serif">
+    <rect x="70" y="290" width="260" height="142" rx="4" fill="#e7ede9" stroke="#9fb2a9"/>
+    <text x="200" y="328" text-anchor="middle" fill="#20302b" font-size="18" font-weight="700">Subagent A</text>
+    <text x="200" y="362" text-anchor="middle" fill="#3f4b46" font-size="15">独立上下文</text>
+    <text x="200" y="394" text-anchor="middle" fill="#6e7772" font-size="14">搜索方向一 · 工具调用</text>
+    <rect x="370" y="290" width="260" height="142" rx="4" fill="#e7ede9" stroke="#9fb2a9"/>
+    <text x="500" y="328" text-anchor="middle" fill="#20302b" font-size="18" font-weight="700">Subagent B</text>
+    <text x="500" y="362" text-anchor="middle" fill="#3f4b46" font-size="15">独立上下文</text>
+    <text x="500" y="394" text-anchor="middle" fill="#6e7772" font-size="14">搜索方向二 · 交叉核对</text>
+    <rect x="670" y="290" width="260" height="142" rx="4" fill="#e7ede9" stroke="#9fb2a9"/>
+    <text x="800" y="328" text-anchor="middle" fill="#20302b" font-size="18" font-weight="700">Subagent C</text>
+    <text x="800" y="362" text-anchor="middle" fill="#3f4b46" font-size="15">独立上下文</text>
+    <text x="800" y="394" text-anchor="middle" fill="#6e7772" font-size="14">搜索方向三 · 补充证据</text>
+  </g>
+  <path d="M200 432 C260 486 365 486 420 506" fill="none" stroke="#c66a3d" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M500 432 V500" fill="none" stroke="#c66a3d" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M800 432 C740 486 635 486 580 506" fill="none" stroke="#c66a3d" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="350" y="500" width="300" height="66" rx="4" fill="#fff4ee" stroke="#c66a3d" stroke-width="2"/>
+  <text x="500" y="540" text-anchor="middle" fill="#7d3e22" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="18" font-weight="700">压缩后的发现与证据</text>
+  <text x="56" y="588" fill="#6e7772" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="14">收益来自并行覆盖与上下文隔离，代价是更多 token、工具调用和汇总误差。</text>
+</svg>
