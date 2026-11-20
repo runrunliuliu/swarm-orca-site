@@ -10,6 +10,7 @@ interface Props { post: CollectionEntry<'research'> }
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
 const sections = headings.filter(heading => heading.depth === 2);
+const coverIsDiagram = post.data.image.endsWith('.svg') || post.data.image.includes('mac-bench-');
 ---
 <Base title={post.data.title} description={post.data.description} image={post.data.image} article>
   <article class="shell article-page">
@@ -19,7 +20,7 @@ const sections = headings.filter(heading => heading.depth === 2);
       <h1>{post.data.title}</h1><p class="dek">{post.data.description}</p>
       <div class="byline"><span>{post.data.author}</span><time datetime={post.data.date.toISOString()}>{dateLabel(post.data.date)}</time><span>约 {post.data.minutes} 分钟</span></div>
     </header>
-    <figure class:list={["article-cover", { "article-cover--chart": post.data.image.includes('mac-bench-') }]}><img src={url(post.data.image)} srcset={imageSet(post.data.image)} sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1400px) 90vw, 1280px" alt={post.data.imageAlt} width="1560" height="890" fetchpriority="high" /><figcaption>{post.data.caption}{post.data.captionUrl && <> <a href={post.data.captionUrl}>查看原图</a>。</>}</figcaption></figure>
+    <figure class:list={["article-cover", { "article-cover--chart": coverIsDiagram }]}><img src={url(post.data.image)} srcset={imageSet(post.data.image)} sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1400px) 90vw, 1280px" alt={post.data.imageAlt} width="1560" height="890" fetchpriority="high" /><figcaption>{post.data.caption}{post.data.captionUrl && <> <a href={post.data.captionUrl}>查看原图</a>。</>}</figcaption></figure>
     <div class="article-grid">
       <aside class="toc" aria-label="文章目录"><details open><summary>本文目录</summary><nav aria-label="章节导航">{sections.map(section => <a href={`#${section.slug}`}>{section.text}</a>)}</nav></details></aside>
       <div class="prose">

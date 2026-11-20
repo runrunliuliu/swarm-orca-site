@@ -1,0 +1,128 @@
+---
+title: "多 Agent 的信箱，和 Actor 的信箱是什么关系？"
+description: "从 Actor 的信箱、调度器与监督机制出发，拆解多 Agent 消息系统继承了什么，又为何必须额外处理路由、持久化、幂等与上下文成本。"
+date: 2026-11-20
+category: "架构解读"
+author: "Swarm-Orca"
+image: "images/mailbox-actor-pipeline.svg"
+imageAlt: "发信方、信箱、调度器与 Actor 依次处理消息的流程图"
+caption: "Actor 的基本消息管线：信箱负责存，调度器负责取，Actor 负责处理。图为概念示意，不代表具体框架实现。"
+sample: false
+minutes: 10
+---
+
+import { url as siteUrl } from '../../lib/site';
+
+先还原一个很常见的场面。你在一个多 Agent 系统里给某个 Agent 派了个活，界面转了两秒，没动静。你翻日志，发现消息其实早就发出去了，只是它前面还排着十几条，全都躺在那个 Agent 的信箱里等着。
+
+很多人第一次听到 mailbox 这个词，会以为它只是队列的别名。它当然是队列，但“队列”只说了它的一半。剩下那一半，也就是谁往里放、谁往外取、取出来交给谁、满了怎么办，才真正决定系统的行为。
+
+这套东西在 Actor 模型里已经存在了几十年，连名字都没有换。所以讨论“像不像”意义不大，更值得弄清楚的是：多 Agent 的信箱继承了 Actor 的哪些零件，又额外承担了什么。
+
+## 一、信箱这个角色的原始设定
+
+先看 Actor 的基本规则。一个 Actor 可以粗略理解成三样东西：一块私有状态、一个接收消息的信箱，以及一套处理消息的行为。
+
+外部想让它工作，不能直接伸手修改它的状态，只能给它发送消息。发送与处理彼此解耦，Actor 按自己的调度节奏消费消息。Actor 对收到的消息逐条响应，这种串行处理方式让内部状态不必同时暴露给多个调用线程。[Akka 对 Actor 模型的说明](https://doc.akka.io/libraries/akka-core/current/typed/guide/actors-intro.html?language=scala)
+
+<figure class="source-figure diagram-figure">
+  <div class="diagram-scroll"><img src={siteUrl('images/mailbox-actor-pipeline.svg')} width="900" height="350" loading="lazy" alt="Actor 从收信到处理完毕的消息管线" /></div>
+  <figcaption><strong>图一：Actor 的消息管线。</strong> 信箱负责存，调度器负责取，Actor 负责处理。把三种职责拆开，才能准确讨论后面的对应关系。</figcaption>
+</figure>
+
+这里有个经常被含糊过去的细节：信箱和调度器不是同一件事。信箱保存等待处理的消息；真正决定何时取出消息、把哪个 Actor 安排到执行线程上的，是运行时的调度机制。平时把它们统称为“信箱机制”问题不大，但真要分析延迟与过载，就必须分开看。
+
+## 二、到了多 Agent，信箱有三种常见形态
+
+多 Agent 系统里的信箱形态，通常跟着部署方式变化。
+
+最轻量的形态，是每个 Agent 一个进程内 inbox。若多个 Agent 都跑在一台机器、一个进程里，内存队列往往已经够用。
+
+系统跨进程以后，常会在中间增加消息总线。发送方不再直接操作对方的 inbox，而是把消息交给总线，由总线按收件人、主题或任务标识路由到目标 Agent。
+
+再进一步，消息总线需要持久化。Agent 重启、进程退出或机器故障以后，尚未处理的消息仍然要能够恢复。这时用到的可能是 Redis、Kafka、数据库表或专门的任务队列，而不再只是内存中的一个 list。
+
+<figure class="source-figure diagram-figure">
+  <div class="diagram-scroll"><img src={siteUrl('images/mailbox-agent-topology.svg')} width="900" height="420" loading="lazy" alt="多个发送方通过消息总线路由到三个 Agent inbox 的拓扑图" /></div>
+  <figcaption><strong>图二：多 Agent 常见拓扑。</strong> 中间多出来的总线，解决的是 Agent 不在同一块内存、甚至不在同一台机器上的问题。</figcaption>
+</figure>
+
+Actor 的信箱在概念上归属于 Actor，外部通过地址投递消息；多 Agent 的消息层则经常成为一个独立服务，多个角色共享同一套路由与存储基础设施。看起来只是换了位置，路由、可靠性和可观测性问题却都从这里开始。
+
+## 三、对号入座：哪些零件能够对应
+
+如果只问“最像哪个组件”，答案当然是信箱本身。但把多 Agent 的消息子系统拆开，会发现它覆盖了 Actor 体系里的多种职责。
+
+<figure class="source-figure diagram-figure">
+  <div class="diagram-scroll"><img src={siteUrl('images/mailbox-component-map.svg')} width="900" height="540" loading="lazy" alt="Actor 组件与多 Agent 消息组件的对应关系图" /></div>
+  <figcaption><strong>图三：职责对应关系。</strong> 最上面几行是直接类比，后面几行更准确地说是工程职责的迁移或组合，并不表示它们属于同一个组件。</figcaption>
+</figure>
+
+- **Mailbox 对 inbox。** 都是等待处理的消息进入目标执行者之前暂存的位置。
+- **Dispatcher 对消费循环。** Actor 运行时由调度器安排处理；多 Agent 系统里通常是 Agent loop 或 worker 拉取消息，再触发模型与工具调用。具体线程模型取决于实现，不能一概而论。
+- **Envelope 对消息包。** Actor 消息通常需要发送者或回复地址。多 Agent 消息还经常携带会话 ID、任务 ID、trace ID、优先级、重试次数与人工确认状态，否则一条链路跨过多个角色以后很难追踪。
+- **Supervision 与 dead letter 对编排层和失败队列。** Actor 框架常把失败处理、监督策略与死信作为运行时能力；多 Agent 系统则可能把这些职责放到 orchestrator、任务状态机和失败队列中。
+- **Scheduler 对定时触发。** Actor 可以安排稍后发送给自己的消息；多 Agent 系统里常表现为 cron、延时任务或唤醒机制。
+
+所以，多 Agent 的“mailbox”有时只是 inbox，有时却被用来指代从路由、存储到消费和失败处理的整套消息子系统。讨论架构前，最好先问一句：这里说的 mailbox，究竟指哪一层？
+
+## 四、真正拉开差距的三件事
+
+对应关系说完，也要看到三处会直接改变工程实现的差异。
+
+**第一，消息可能从内存搬到网络。** 同进程 Actor 的消息传递可以很轻；跨节点 Actor 和多 Agent 系统则都会遇到网络、序列化与节点故障。进入消息中间件以后，还要明确投递语义。至少一次投递意味着消息可能重复，业务侧必须考虑幂等与去重。[Akka 消息投递语义](https://doc.akka.io/libraries/akka-core/current/general/message-delivery-reliability.html)
+
+**第二，消息的重量变了。** 传统 Actor 消息往往只是少量结构化数据。Agent 消息却可能带着任务历史、工具结果、文件引用与长上下文，单条处理要等待模型调用，还会消耗 token。此时消息系统不仅要关心“什么时候处理”，还要关心“哪些上下文应该进入这次处理”。这不是经典信箱抽象本身负责的事情。
+
+**第三，选择与路由发生在不同位置。** Erlang 支持 selective receive，接收进程可以扫描自己的消息队列，取出符合模式的消息，暂时保留其他消息；但这不是所有 Actor 实现的统一语义。[Erlang receive 与消息队列](https://www.erlang.org/doc/system/ref_man_processes.html) 多 Agent 系统通常会更早地按收件人、topic、任务或优先级路由。一个是在接收端选择，一个是在投递链路上分类，排查问题时看的位置完全不同。
+
+<figure class="source-figure diagram-figure">
+  <div class="diagram-scroll"><img src={siteUrl('images/mailbox-message-journey.svg')} width="900" height="540" loading="lazy" alt="同一条消息在同进程 Actor 与跨机器多 Agent 系统中的旅程对比" /></div>
+  <figcaption><strong>图四：同一条消息的两种旅程。</strong> 下半部分增加了持久化、路由、排队和外部模型调用，每一步都需要独立的状态与故障处理。</figcaption>
+</figure>
+
+如果系统里出现“消息发了却没反应”，不能只问消息是否送达。它可能仍在总线等待路由，可能已经进入目标 inbox，可能因为并发上限尚未被消费，也可能正卡在模型或工具调用。只有把这些阶段分别记录，日志才真正有解释力。
+
+## 五、一个必须纠正的误区：Actor 信箱不天然有界
+
+把“Actor 使用有界信箱，多 Agent 使用无界队列”当成两类系统的固有差别，是不准确的。Actor 模型没有规定信箱必须有界，具体行为取决于框架与配置。例如 Akka 默认使用无界 mailbox；如果生产速度长期高于消费速度，同样可能耗尽内存。它也支持显式配置有界 mailbox，满载消息可以进入 dead letters。[Akka Mailboxes 官方文档](https://doc.akka.io/libraries/akka-core/current/typed/mailboxes.html)
+
+因此，有界与无界不是 Actor 和 Agent 的分界，而是两边都要主动做的容量选择。
+
+<figure class="source-figure diagram-figure">
+  <div class="diagram-scroll"><img src={siteUrl('images/mailbox-overload.svg')} width="900" height="340" loading="lazy" alt="有界信箱与无界信箱在过载时的行为对比" /></div>
+  <figcaption><strong>图五：两种容量策略。</strong> 有界队列把压力显式暴露给上游，无界队列则可能把压力积累成内存与延迟问题。两种策略都可能出现在 Actor 或多 Agent 系统中。</figcaption>
+</figure>
+
+真正值得借鉴的是容量治理，而不是某个框架的默认值：队列上限是多少，等待多久算超时，哪些消息允许丢弃，失败消息去哪里，生产速度超过消费能力时如何限流。这几件事定清楚，通常比换一个更时髦的消息框架更有价值。
+
+## 六、放回 Swarm-Orca：信箱是协作边界，不只是传输通道
+
+对 Swarm-Orca 来说，信箱这个类比最有价值的地方，是提醒我们把“消息已经发送”和“任务已经推进”分开。
+
+一条协作消息至少涉及四层事实：它是否成功投递，目标角色是否消费，它是否改变了任务状态，以及改变后的结果有没有通过验收。如果只记录第一层，系统只能证明消息到过；如果把任务 ID、工作区基线、执行结果与审查状态都关联起来，消息才真正成为可追溯的协作事件。
+
+这也给出了几项可以直接检查的设计问题：
+
+1. **路由是否明确**：消息是发给某个角色、某个任务，还是发给一类订阅者？
+2. **消费是否有边界**：同一角色一次处理几项任务，过载时是排队、拒绝还是降级？
+3. **重试是否安全**：超时以后能否判断消息没有执行，还是结果尚未返回？重复投递会不会重复修改外部状态？
+4. **状态是否可追踪**：投递、消费、执行、审查与完成是否是不同状态，能否看到消息停在哪一步？
+5. **上下文是否可恢复**：Agent 重启以后，能否从任务记录和工作区继续，而不是只靠对话窗口里的短期记忆？
+
+这些问题是工程设计检查项，不表示 Swarm-Orca 已经完整实现了一套通用消息中间件或自动背压机制。项目的实际能力与边界仍以公开仓库和可验证的运行证据为准。
+
+## 收个尾
+
+一句话概括：多 Agent 的 inbox 是 Actor mailbox 的近亲，但完整的多 Agent 消息系统往往还包含调度、信封、监督、持久化、路由和上下文管理。它不是一个被简单复制的 Actor 信箱，而是一套被拉长到网络与任务生命周期中的消息管线。
+
+如果 Agent 都在一个进程里、消息很轻，进程内队列加单消费者通常已经够用。一旦跨机器、单条处理耗时显著、消息需要恢复或外部动作不能重复，就要按分布式消息系统的标准认真处理幂等、去重、超时、死信、容量与可观测性。Actor 提供的是思考并发与隔离的模型，具体可靠性仍由实现承担。
+
+## 参考与说明
+
+- [Akka：Actor 模型导读](https://doc.akka.io/libraries/akka-core/current/typed/guide/actors-intro.html?language=scala)
+- [Akka：Mailboxes](https://doc.akka.io/libraries/akka-core/current/typed/mailboxes.html)
+- [Akka：Message Delivery Reliability](https://doc.akka.io/libraries/akka-core/current/general/message-delivery-reliability.html)
+- [Erlang：Processes 与 receive](https://www.erlang.org/doc/system/ref_man_processes.html)
+- [Swarm-Orca 公开仓库](https://github.com/runrunliuliu/swarm-orca)
+- 文中的五张图来自本次文章原稿，均为概念示意，不代表某个框架或产品的精确实现。

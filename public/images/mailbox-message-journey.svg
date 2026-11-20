@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 540" role="img" aria-label="同一条消息在 Actor 与多 Agent 系统中的旅程对比">
+  <text x="30" y="38" font-family="Georgia,serif" font-size="16" fill="#2F5D50" font-weight="700">同一条消息，两种旅程</text>
+  <text x="30" y="62" font-size="13" fill="#737A74">上面是 Actor 单机内存版，下面是多 agent 跨机落盘版；差别集中在中段</text>
+
+  <rect x="30" y="90" width="840" height="176" fill="#FCFCFA" stroke="#DCDDD5"/>
+  <text x="48" y="116" font-size="13" fill="#2F5D50" font-weight="600">Actor 版：单机 · 内存 · 毫秒级</text>
+
+  <defs>
+    <marker id="ar5" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#2F5D50"/></marker>
+  </defs>
+
+  <rect x="60" y="156" width="130" height="44" fill="#E7EDE9" stroke="#2F5D50"/>
+  <text x="125" y="183" font-size="12" fill="#1E2321" text-anchor="middle">1 发信</text>
+  <path d="M190 178 L210 178" stroke="#2F5D50" stroke-width="1.5" marker-end="url(#ar5)"/>
+  <rect x="210" y="156" width="130" height="44" fill="#FFFFFF" stroke="#2F5D50"/>
+  <text x="275" y="183" font-size="12" fill="#1E2321" text-anchor="middle">2 信箱（内存）</text>
+  <path d="M340 178 L360 178" stroke="#2F5D50" stroke-width="1.5" marker-end="url(#ar5)"/>
+  <rect x="360" y="156" width="130" height="44" fill="#FFFFFF" stroke="#2F5D50"/>
+  <text x="425" y="183" font-size="12" fill="#1E2321" text-anchor="middle">3 调度器</text>
+  <path d="M490 178 L510 178" stroke="#2F5D50" stroke-width="1.5" marker-end="url(#ar5)"/>
+  <rect x="510" y="156" width="130" height="44" fill="#FFFFFF" stroke="#2F5D50"/>
+  <text x="575" y="183" font-size="12" fill="#1E2321" text-anchor="middle">4 Actor 处理</text>
+  <path d="M640 178 L660 178" stroke="#2F5D50" stroke-width="1.5" marker-end="url(#ar5)"/>
+  <rect x="660" y="156" width="130" height="44" fill="#FFFFFF" stroke="#2F5D50"/>
+  <text x="725" y="183" font-size="12" fill="#1E2321" text-anchor="middle">5 回信</text>
+
+  <text x="60" y="234" font-size="12" fill="#737A74">全程在同一个进程里，没有网络，没有序列化。失败了基本就是代码出错。</text>
+
+  <rect x="30" y="286" width="840" height="196" fill="#FCFCFA" stroke="#DCDDD5"/>
+  <text x="48" y="312" font-size="13" fill="#B0552F" font-weight="600">多 Agent 版：跨机 · 落盘 · 秒级</text>
+
+  <defs>
+    <marker id="ar6" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#B0552F"/></marker>
+  </defs>
+
+  <rect x="48" y="352" width="112" height="48" fill="#F6EDE7" stroke="#B0552F"/>
+  <text x="104" y="381" font-size="11" fill="#1E2321" text-anchor="middle">1 发信</text>
+  <path d="M160 376 L176 376" stroke="#B0552F" stroke-width="1.5" marker-end="url(#ar6)"/>
+  <rect x="176" y="352" width="112" height="48" fill="#FFFFFF" stroke="#B0552F"/>
+  <text x="232" y="374" font-size="11" fill="#1E2321" text-anchor="middle">2 总线</text>
+  <text x="232" y="390" font-size="10" fill="#737A74" text-anchor="middle">落盘</text>
+  <path d="M288 376 L304 376" stroke="#B0552F" stroke-width="1.5" marker-end="url(#ar6)"/>
+  <rect x="304" y="352" width="112" height="48" fill="#FFFFFF" stroke="#B0552F"/>
+  <text x="360" y="381" font-size="11" fill="#1E2321" text-anchor="middle">3 路由</text>
+  <path d="M416 376 L432 376" stroke="#B0552F" stroke-width="1.5" marker-end="url(#ar6)"/>
+  <rect x="432" y="352" width="112" height="48" fill="#FFFFFF" stroke="#B0552F"/>
+  <text x="488" y="374" font-size="11" fill="#1E2321" text-anchor="middle">4 agent inbox</text>
+  <text x="488" y="390" font-size="10" fill="#737A74" text-anchor="middle">可能排队</text>
+  <path d="M544 376 L560 376" stroke="#B0552F" stroke-width="1.5" marker-end="url(#ar6)"/>
+  <rect x="560" y="352" width="112" height="48" fill="#FFFFFF" stroke="#B0552F"/>
+  <text x="616" y="374" font-size="11" fill="#1E2321" text-anchor="middle">5 拉取 + LLM</text>
+  <text x="616" y="390" font-size="10" fill="#B0552F" text-anchor="middle">秒级到几十秒</text>
+  <path d="M672 376 L688 376" stroke="#B0552F" stroke-width="1.5" marker-end="url(#ar6)"/>
+  <rect x="688" y="352" width="112" height="48" fill="#FFFFFF" stroke="#B0552F"/>
+  <text x="744" y="381" font-size="11" fill="#1E2321" text-anchor="middle">6 回信 / 重试</text>
+
+  <text x="48" y="430" font-size="12" fill="#737A74">中间多了一次落盘、一次路由。每一步都可能失败，每一次重试都可能造成重复处理。</text>
+  <text x="48" y="452" font-size="12" fill="#4A524D">你在系统里看到的“发消息没反应”，多半是卡在第 4 个格子——不是丢了，是在排队。</text>
+</svg>

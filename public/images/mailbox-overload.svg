@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 340" role="img" aria-label="有界信箱与无界信箱在过载时的行为对比">
+  <text x="30" y="38" font-family="Georgia,serif" font-size="16" fill="#2F5D50" font-weight="700">过载时，两种系统往两个方向走</text>
+  <text x="30" y="62" font-size="13" fill="#737A74">左边把压力推回去，右边把压力攒在自己身上</text>
+
+  <text x="230" y="100" font-size="13" fill="#2F5D50" text-anchor="middle" font-weight="600">有界信箱：满了就顶回上游</text>
+  <rect x="60" y="120" width="220" height="124" fill="#FFFFFF" stroke="#2F5D50" stroke-width="1.5"/>
+  <rect x="72" y="132" width="60" height="24" fill="#E7EDE9" stroke="#B7C6BF"/>
+  <rect x="140" y="132" width="60" height="24" fill="#E7EDE9" stroke="#B7C6BF"/>
+  <rect x="208" y="132" width="60" height="24" fill="#E7EDE9" stroke="#B7C6BF"/>
+  <rect x="72" y="164" width="60" height="24" fill="#E7EDE9" stroke="#B7C6BF"/>
+  <rect x="140" y="164" width="60" height="24" fill="#E7EDE9" stroke="#B7C6BF"/>
+  <rect x="208" y="164" width="60" height="24" fill="#E7EDE9" stroke="#B7C6BF"/>
+  <rect x="72" y="196" width="60" height="24" fill="#E7EDE9" stroke="#B7C6BF"/>
+  <rect x="140" y="196" width="60" height="24" fill="#E7EDE9" stroke="#B7C6BF"/>
+  <rect x="208" y="196" width="60" height="24" fill="#F3D9CC" stroke="#B0552F"/>
+  <text x="238" y="213" font-size="10" fill="#B0552F" text-anchor="middle">满</text>
+
+  <defs>
+    <marker id="ar7" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#B0552F"/></marker>
+  </defs>
+  <path d="M286 182 L330 160" stroke="#B0552F" stroke-width="1.6" marker-end="url(#ar7)"/>
+  <text x="300" y="145" font-size="11" fill="#B0552F">拒收 / 等待</text>
+  <text x="60" y="272" font-size="12" fill="#737A74">上游收到压力，自然慢下来。</text>
+  <text x="60" y="292" font-size="12" fill="#737A74">代价是吞吐下降，好处是不崩。</text>
+
+  <text x="680" y="100" font-size="13" fill="#B0552F" text-anchor="middle" font-weight="600">无界信箱：一直堆到出事</text>
+  <rect x="560" y="150" width="220" height="94" fill="none" stroke="#B0552F" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <rect x="572" y="160" width="60" height="22" fill="#E7EDE9" stroke="#B7C6BF"/>
+  <rect x="640" y="160" width="60" height="22" fill="#E7EDE9" stroke="#B7C6BF"/>
+  <rect x="708" y="160" width="60" height="22" fill="#E7EDE9" stroke="#B7C6BF"/>
+  <rect x="572" y="188" width="60" height="22" fill="#E7EDE9" stroke="#B7C6BF"/>
+  <rect x="640" y="188" width="60" height="22" fill="#E7EDE9" stroke="#B7C6BF"/>
+  <rect x="708" y="188" width="60" height="22" fill="#E7EDE9" stroke="#B7C6BF"/>
+  <rect x="572" y="216" width="60" height="22" fill="#E7EDE9" stroke="#B7C6BF"/>
+  <rect x="640" y="216" width="60" height="22" fill="#E7EDE9" stroke="#B7C6BF"/>
+  <rect x="708" y="216" width="60" height="22" fill="#E7EDE9" stroke="#B7C6BF"/>
+
+  <rect x="572" y="128" width="60" height="22" fill="#F3D9CC" stroke="#B0552F"/>
+  <rect x="640" y="124" width="60" height="22" fill="#F3D9CC" stroke="#B0552F"/>
+  <rect x="708" y="128" width="60" height="22" fill="#F3D9CC" stroke="#B0552F"/>
+  <rect x="640" y="120" width="60" height="22" fill="#F3D9CC" stroke="#B0552F"/>
+
+  <text x="560" y="272" font-size="12" fill="#737A74">队列没有上限，压力全落在自己身上。</text>
+  <text x="560" y="292" font-size="12" fill="#737A74">内存涨、延迟涨，最后一起爆。</text>
+
+  <text x="30" y="326" font-size="12" fill="#4A524D">看图的方式：左边那个框就是队列上限；右边框外堆出来的块，就是一直没人处理的消息。</text>
+</svg>

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 540" role="img" aria-label="Actor 组件与多 Agent 组件的对应关系图">
+  <text x="30" y="38" font-family="Georgia,serif" font-size="16" fill="#2F5D50" font-weight="700">一张表不够看的，就画成一一对应</text>
+  <text x="30" y="62" font-size="13" fill="#737A74">左边是 Actor 模型里的零件，右边是多 agent 系统里承担同一职责的东西</text>
+
+  <text x="170" y="104" font-size="13" fill="#2F5D50" text-anchor="middle" font-weight="600">Actor 里的零件</text>
+  <text x="720" y="104" font-size="13" fill="#2F5D50" text-anchor="middle" font-weight="600">多 agent 里干这活的东西</text>
+
+  <defs>
+    <marker id="ar4" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6" fill="#B0552F"/></marker>
+  </defs>
+
+  <rect x="40" y="126" width="260" height="46" fill="#E7EDE9" stroke="#2F5D50"/>
+  <text x="170" y="155" font-size="13" fill="#1E2321" text-anchor="middle">Mailbox（信箱）</text>
+  <path d="M300 149 L576 149" stroke="#B0552F" stroke-width="1.4" marker-end="url(#ar4)"/>
+  <rect x="580" y="126" width="280" height="46" fill="#FFFFFF" stroke="#C9CBC2"/>
+  <text x="720" y="155" font-size="13" fill="#1E2321" text-anchor="middle">每个 agent 自己的 inbox</text>
+
+  <rect x="40" y="192" width="260" height="46" fill="#E7EDE9" stroke="#2F5D50"/>
+  <text x="170" y="221" font-size="13" fill="#1E2321" text-anchor="middle">Dispatcher（调度器）</text>
+  <path d="M300 215 L576 215" stroke="#B0552F" stroke-width="1.4" marker-end="url(#ar4)"/>
+  <rect x="580" y="192" width="280" height="46" fill="#FFFFFF" stroke="#C9CBC2"/>
+  <text x="720" y="221" font-size="13" fill="#1E2321" text-anchor="middle">agent loop / worker</text>
+
+  <rect x="40" y="258" width="260" height="46" fill="#E7EDE9" stroke="#2F5D50"/>
+  <text x="170" y="287" font-size="13" fill="#1E2321" text-anchor="middle">Envelope（信封）</text>
+  <path d="M300 281 L576 281" stroke="#B0552F" stroke-width="1.4" marker-end="url(#ar4)"/>
+  <rect x="580" y="258" width="280" height="46" fill="#FFFFFF" stroke="#C9CBC2"/>
+  <text x="720" y="287" font-size="13" fill="#1E2321" text-anchor="middle">带 trace 的消息包</text>
+
+  <rect x="40" y="324" width="260" height="46" fill="#E7EDE9" stroke="#2F5D50"/>
+  <text x="170" y="353" font-size="13" fill="#1E2321" text-anchor="middle">Supervision（监督者）</text>
+  <path d="M300 347 L576 347" stroke="#B0552F" stroke-width="1.4" marker-end="url(#ar4)"/>
+  <rect x="580" y="324" width="280" height="46" fill="#FFFFFF" stroke="#C9CBC2"/>
+  <text x="720" y="353" font-size="13" fill="#1E2321" text-anchor="middle">orchestrator + 重试</text>
+
+  <rect x="40" y="390" width="260" height="46" fill="#E7EDE9" stroke="#2F5D50"/>
+  <text x="170" y="419" font-size="13" fill="#1E2321" text-anchor="middle">Dead letter（死信）</text>
+  <path d="M300 413 L576 413" stroke="#B0552F" stroke-width="1.4" marker-end="url(#ar4)"/>
+  <rect x="580" y="390" width="280" height="46" fill="#FFFFFF" stroke="#C9CBC2"/>
+  <text x="720" y="419" font-size="13" fill="#23201E" text-anchor="middle">失败队列</text>
+
+  <rect x="40" y="456" width="260" height="46" fill="#E7EDE9" stroke="#2F5D50"/>
+  <text x="170" y="485" font-size="13" fill="#1E2321" text-anchor="middle">Scheduler（定时器）</text>
+  <path d="M300 479 L576 479" stroke="#B0552F" stroke-width="1.4" marker-end="url(#ar4)"/>
+  <rect x="580" y="456" width="280" height="46" fill="#FFFFFF" stroke="#C9CBC2"/>
+  <text x="720" y="485" font-size="13" fill="#1E2321" text-anchor="middle">cron / 延时队列</text>
+
+  <text x="30" y="526" font-size="12" fill="#737A74">最上面那行是真正“像”的部分；下面几行是职责被合并进来、或者被拆出去的部分，别当成同一件东西。</text>
+</svg>
